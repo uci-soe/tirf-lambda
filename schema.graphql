@@ -1,0 +1,157 @@
+scalar Date
+
+type Query {
+  settings: [Setting]
+  setting(key: String!): Setting
+
+  faculty(query: String): [Faculty]
+  facultyMember(id: String!): Faculty
+
+  students(query: String): [Student]
+  student(id: String!): Student
+  studentByUCINetID(ucinetid: String!): Student
+
+  users: [User]
+  user(id: String!): User
+  userByUCINetID(ucinetid: String!): User
+
+  supports(faculty: String, student: String): [Support]
+  support(id: String): Support
+  searchSupport(faculty: String, student: String, query: String): [Support]
+
+  me: User
+  webauth: AuthResp
+}
+
+type Mutation {
+  addFacultyMember(input: CreateFacultyInput!): Faculty!
+  updateFacultyMember(input: UpdateFacultyInput!): Faculty!
+  addFacultyProject(ucinetid: String!, project: String!): Faculty!
+  removeFacultyProject(ucinetid: String!, project: String!): Faculty!
+  addStudent(input: CreateStudentInput!): Student!
+  updateStudent(input: UpdateStudentInput!): Student!
+  addSupport(input: CreateSupportInput!): Support!
+  updateSupport(input: UpdateSupportInput!): Support!
+  removeSupport(id: String!): Support!
+
+  login (user: String!, password: String): User
+}
+
+
+
+type Faculty {
+  id: String!
+  firstName: String
+  lastName: String
+  lastFirstName: String
+  ucinetid: String!
+  email: String
+  canLogin: Boolean
+  accessOwnData:  Boolean
+  projects:       [ String ]!
+  supportGiven:   [ Support ]!
+  initialCredit:  Float!
+  availableCredit: Float!
+}
+input CreateFacultyInput {
+  firstName: String!
+  lastName: String!
+  ucinetid: String!
+  projects: [ String ]
+  initialCredit: Float
+}
+input UpdateFacultyInput {
+  id: String!
+  firstName: String
+  lastName: String
+  ucinetid: String
+  projects: [ String ]
+  initialCredit: Float
+  accessOwnData: Boolean
+}
+
+
+
+type Student {
+  id: String!
+  firstName:       String
+  lastName:        String
+  lastFirstName:   String
+  ucinetid:        String!
+  email:           String
+  canLogin:        Boolean
+  accessOwnData:   Boolean
+  supportReceived: [Support]!
+}
+input CreateStudentInput {
+  firstName: String!
+  lastName: String!
+  ucinetid: String!
+}
+input UpdateStudentInput {
+  id: String!
+  firstName: String
+  lastName: String
+  ucinetid: String
+}
+
+
+
+
+type Support {
+  id: String!
+  faculty: Faculty!
+  student: Student!
+  fundingSource: String!
+  notes: String
+  quarter: String!
+  created: Date
+}
+input CreateSupportInput {
+  faculty: String!
+  student: String!
+  fundingSource: String!
+  notes: String
+  quarter: String!
+}
+input UpdateSupportInput {
+  id: String!
+  fundingSource: String
+  notes: String
+  quarter: String
+}
+
+
+
+
+
+type User {
+  id: String!
+  firstName:       String
+  lastName:        String
+  ucinetid:        String!
+  isAdmin:         Boolean
+  canLogin:        Boolean
+}
+type Setting {
+  id: String!
+  key: String!
+  dataType: String!
+  adminOnly: Boolean
+  dataValue: String
+}
+
+type AuthResp {
+  _id: String!
+  ucinetid: String
+  auth_host: String
+  x_forwarded_for: String
+  time_created: Int
+  last_checked: Int
+  max_idle_time: Int
+  campus_id: String
+  uci_affiliations: [String]
+  age_in_seconds: Int
+  seconds_since_checked: Int
+  user: User
+}
