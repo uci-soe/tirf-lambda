@@ -28,6 +28,11 @@ provider:
 #  stage: dev
   region: us-west-2
 
+  tags: # Optional service wide function tags
+    Project:Account: SOE General
+    Project:Name: TIRF
+    Project:PI: rhett
+
 # you can add statements to the Lambda function's IAM Role here
 #  iamRoleStatements:
 #    - Effect: "Allow"
@@ -45,8 +50,7 @@ provider:
 #            - "/*"
 
 # you can define service wide environment variables here
-#  environment:
-#    variable1: value1
+  environment: ${ssm:/aws/reference/secretsmanager/tirf/mongo/prod-y8jOHc~true}
 
 # you can add packaging information here
 #package:
