@@ -9,4 +9,4 @@ const schema  = makeExecutableSchema({
 
 const server = new ApolloServer({ schema });
 
-exports.graphqlHandler = server.createHandler();
+module.exports.handler = server.createHandler();
