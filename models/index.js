@@ -1,19 +1,26 @@
-const fs = require('fs');
-const path = require('path');
+const fs       = require('fs');
+const path     = require('path');
 const mongoose = require('mongoose');
 const basename = path.basename(module.filename);
 
-const { ObjectId } = require("mongodb");
+const { ObjectId } = require('mongodb');
 
 
-const mongoConf = config.mongo;
-const userStr   = mongoConf.user ? `${mongoConf.user}:${mongoConf.pass}@` : '';
-const mongoStr  = `mongodb://${userStr}${mongoConf.host}:${mongoConf.port}/${mongoConf.database}?socketTimeoutMS=90000`;
+const mongoConf = {
+  database: process.env.DATABASE,
+  host:     process.env.HOST,
+  port:     process.env.PORT,
+  user:     process.env.USERNAME,
+  pass:     process.env.PASSWORD,
+};
 
-mongoose.connect(mongoStr, {useNewUrlParser: true});
+const userStr  = mongoConf.user ? `${mongoConf.user}:${mongoConf.pass}@` : '';
+const mongoStr = `mongodb://${userStr}${mongoConf.host}:${mongoConf.port}/${mongoConf.database}?socketTimeoutMS=90000`;
+
+mongoose.connect(mongoStr, { useNewUrlParser: true });
 
 
-let models = {mongoose};
+let models  = { mongoose };
 let gqlDefs = [];
 fs
   .readdirSync(__dirname)
@@ -30,4 +37,4 @@ fs
   });
 
 
-module.exports = {db: models, gqlDefs, ObjectId};
+module.exports = { db: models, gqlDefs, ObjectId };
